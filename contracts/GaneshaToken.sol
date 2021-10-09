@@ -29,6 +29,10 @@ contract GaneshaToken is ERC20, AccessControl {
     require(_msgSender() == admin, "Not admin");
     _;
     }
+    
+    function getPauserRole() public pure returns(bytes32){
+        return PAUSER_ROLE;
+    }
 
 
     function Pause(bool _paused) public {
@@ -41,6 +45,11 @@ contract GaneshaToken is ERC20, AccessControl {
     function mint(address to, uint256 amount) external onlyAdmin{
         _mint(to, amount);
         require(hasRole(MINTER_ROLE, _msgSender()), "Caller is not a minter");
+    }
+    
+    function grantRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
+        require(_msgSender() == admin, "Only admin can grant Role");
+        super.grantRole(getPauserRole(), account);
     }
     
     function burn(address account, uint256 amount) internal virtual{
