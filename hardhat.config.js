@@ -27,15 +27,20 @@ module.exports = {
     hardhat: {
       initialBaseFeePerGas: 0, // workaround from https://github.com/sc-forks/solidity-coverage/issues/652#issuecomment-896330136 . Remove when that issue is closed.
     },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
+    goerli: {
+        url: process.env.GOERLI_URL || "",
+        accounts:
+          process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      },
+      rinkeby: {
+        url: process.env.RINKEBY_URL || "",
+        accounts:
+          process.env.RINKEBY_PRIVATE_KEY !== undefined ? [process.env.RINKEBY_PRIVATE_KEY] : [],
+      },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD",
+    currency: "USD", 
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,

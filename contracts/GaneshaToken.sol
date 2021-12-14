@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 //import "@openzeppelin\contracts\security\Pausable.sol";
@@ -17,7 +17,7 @@ contract GaneshaToken is ERC20, AccessControl {
     constructor(string memory name_, string memory symbol_ ) ERC20(name_, symbol_){        
     _mint(msg.sender, 10000 * 10 ** 18);
     admin = msg.sender;
-    _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    _setupRole(DEFAULT_ADMIN_ROLE , _msgSender());
     }    
 
     modifier setPaused(){
@@ -47,12 +47,17 @@ contract GaneshaToken is ERC20, AccessControl {
         require(hasRole(MINTER_ROLE, _msgSender()), "Caller is not a minter");
     }
     
-    function grantRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
+    function grantRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)){
         require(_msgSender() == admin, "Only admin can grant Role");
-        super.grantRole(getPauserRole(), account);
+        super.grantRole(role, account);
+    }
+
+    function hasRoles(bytes32 _role, address _account) public view returns (bool) {
+        return (super.hasRole(_role, _account));
+        
     }
     
-    function burn(address account, uint256 amount) internal virtual{
+    function burn(address account, uint256 amount) public virtual{
         require(hasRole(BURNER_ROLE, _msgSender()), "Caller is not a burner");
         super._burn(account, amount);
     }
@@ -85,6 +90,10 @@ contract GaneshaToken is ERC20, AccessControl {
     returns (bool){
         super.decreaseAllowance(spender, subtractedValue);
         return true;
+     }
+
+     function totalSupply()public view virtual override returns (uint256) {
+        return super.totalSupply();
      }
 } 
 
